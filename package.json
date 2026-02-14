@@ -1,0 +1,16 @@
+{
+  "name": "wf-data-server-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node tests/test_app.js"
+  },
+  "private": true,
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "express": "^5.2.1",
+    "mqtt": "^5.15.0"
+  }
+}

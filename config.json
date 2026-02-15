@@ -1,0 +1,6 @@
+{
+  "database": "data.db",
+  "mqtt_broker": "mqtt://projects.westernflyer.org:1883",
+  "mqtt_topic": "nmea/+/+",
+  "api_port": 3000
+}

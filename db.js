@@ -104,10 +104,16 @@ module.exports = {
         db.prepare(sql).run(values);
     },
 
-    getData(startTime, endTime) {
-        const stmt = db.prepare(
-            'SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC'
-        );
-        return stmt.all(startTime, endTime);
+    getData(startTime, endTime, limit) {
+        let sql = 'SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC';
+        const params = [startTime, endTime];
+
+        if (limit !== undefined && limit !== null) {
+            sql += ' LIMIT ?';
+            params.push(limit);
+        }
+
+        const stmt = db.prepare(sql);
+        return stmt.all(...params);
     }
 };

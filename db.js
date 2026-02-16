@@ -70,7 +70,7 @@ function coerceToDeclaredType(columnName, value) {
 
 module.exports = {
     saveData(data) {
-        // Require PK fields
+        // Require primary key fields
         if (!data || data.mmsi == null || data.timestamp == null) {
             throw new Error('saveData requires mmsi and timestamp');
         }

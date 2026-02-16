@@ -1,6 +1,7 @@
 
 
 ## API
+
 ### Get records
 
 Return all records within a given time span
@@ -72,12 +73,26 @@ Keep-Alive: timeout=5
 
 This time, return the results in descending order:
 
+```shell
+curl -i --silent -X GET 'http://localhost:3001/api/v1/data?limit=2&direction=desc'
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 828
+ETag: W/"33c-ibZeUqlRq84477Jg7s/RnW5C2m4"
+Date: Mon, 16 Feb 2026 22:03:19 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
 
-
+[
+  {"mmsi":"368323170","timestamp":1771279320000,"awa":124.3,"aws_knots":7.1,"cog_true":258.57,"dew_point_celsius":null,"hdg_true":178.3,"humidity_relative":null,"latitude":36.80579,"longitude":-121.78567833333334,"pressure_millibars":1002.9999999999999,"rate_of_turn":0.15,"rudder_angle":-2,"sog_knots":0.02,"temperature_air_celsius":8.7,"temperature_water_celsius":null,"twd_true":313.49,"tws_knots":7.19,"water_depth_meters":1.88},
+  {"mmsi":"368323170","timestamp":1771279260000,"awa":115.9,"aws_knots":5.3,"cog_true":null,"dew_point_celsius":null,"hdg_true":null,"humidity_relative":null,"latitude":null,"longitude":null,"pressure_millibars":null,"rate_of_turn":0.97,"rudder_angle":null,"sog_knots":null,"temperature_air_celsius":null,"temperature_water_celsius":null,"twd_true":null,"tws_knots":null,"water_depth_meters":1.93}
+]    
+```
 
 
 # License & Copyright
 
-Copyright (c) 2025-2026 Tom Keffer <tkeffer@gmail.com>
+Copyright (c) 2025–2026 Tom Keffer <tkeffer@gmail.com>
 
 See the file LICENSE for your full rights.

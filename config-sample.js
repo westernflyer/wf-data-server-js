@@ -21,7 +21,7 @@ module.exports = {
         "port": 3001
     },
     "accumulation": {
-        // Time period in milliseconds to accumulate data, before writing to the database
+        // Time period in milliseconds to accumulate data before writing to the database
         "periodMs": 60000
     }
 };

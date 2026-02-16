@@ -24,7 +24,8 @@ function handleMessage(topic, message) {
   console.log(`Received message on topic ${topic}: ${message}`);
 
   const mmsi = parts[1];
-  const sentenceType = parts[2];
+  // The NMEA sentence type is unused:
+  // const sentenceType = parts[2];
   let data;
   try {
     data = JSON.parse(message.toString());

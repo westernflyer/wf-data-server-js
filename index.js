@@ -1,10 +1,9 @@
-const { startMqtt } = require('./mqtt_handler');
-const { startApi } = require('./api');
-const config = require('./config.json');
+const config = require('./config');
+require('./mqtt_client');
+const app = require('./api');
 
-const BROKER_URL = config.mqtt_broker || process.env.MQTT_BROKER || 'mqtt://localhost';
+const port = config.server.port;
 
-console.log('Starting Western Flyer Data Server...');
-
-startMqtt(BROKER_URL, config.mqtt_topic || 'nmea/+/+');
-startApi();
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});

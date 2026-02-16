@@ -1,16 +1,23 @@
 {
   "name": "wf-data-server-js",
   "version": "1.0.0",
-  "description": "",
+  "description": "Store NMEA data from MQTT, then serve it via HTTP.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node tests/test_app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "private": true,
+  "keywords": [],
+  "author": "Tom Keffer <tkeffer@gmail.com>",
+  "license": "MIT",
+  "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.6.2",
     "express": "^5.2.1",
     "mqtt": "^5.15.0"
+  },
+  "devDependencies": {
+    "aedes": "^1.0.0",
+    "supertest": "^7.2.2"
   }
 }

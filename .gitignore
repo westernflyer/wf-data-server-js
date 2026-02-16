@@ -1,3 +1,6 @@
+# Don't commit config file
+config.js
+
 google-api-key.js
 
 # Logs

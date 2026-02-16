@@ -1,73 +1,113 @@
 const Database = require('better-sqlite3');
-const path = require('path');
-const config = require('./config.json');
+const config = require('./config');
 
-const dbPath = path.isAbsolute(config.database) ? config.database : path.join(__dirname, config.database);
-const db = new Database(dbPath);
+const db = new Database(config.database.path);
 
-// Initialize the database
 db.exec(`
-  CREATE TABLE IF NOT EXISTS telemetry (
-    timestamp INTEGER PRIMARY KEY,
+  CREATE TABLE IF NOT EXISTS data (
+    mmsi TEXT,
+    timestamp INTEGER,
+    awa REAL,
+    aws_knots REAL,
+    cog_true REAL,
+    dew_point_celsius REAL,
+    hdg_true REAL,
+    humidity_relative REAL,
     latitude REAL,
     longitude REAL,
-    depth REAL,
-    true_wind_speed REAL,
-    true_wind_direction REAL,
-    apparent_wind_speed REAL,
-    apparent_wind_direction REAL,
-    air_temperature REAL
+    pressure_millibars REAL,
+    rate_of_turn REAL,
+    rudder_angle REAL,
+    sog_knots REAL,
+    temperature_air_celsius REAL,
+    temperature_water_celsius REAL,
+    twd_true REAL,
+    tws_knots REAL,
+    water_depth_meters REAL,
+    PRIMARY KEY (mmsi, timestamp)
   )
 `);
 
-const insertStmt = db.prepare(`
-  INSERT INTO telemetry (timestamp, latitude, longitude, depth, true_wind_speed, true_wind_direction, apparent_wind_speed, apparent_wind_direction, air_temperature)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  ON CONFLICT(timestamp) DO UPDATE SET
-    latitude = COALESCE(excluded.latitude, telemetry.latitude),
-    longitude = COALESCE(excluded.longitude, telemetry.longitude),
-    depth = COALESCE(excluded.depth, telemetry.depth),
-    true_wind_speed = COALESCE(excluded.true_wind_speed, telemetry.true_wind_speed),
-    true_wind_direction = COALESCE(excluded.true_wind_direction, telemetry.true_wind_direction),
-    apparent_wind_speed = COALESCE(excluded.apparent_wind_speed, telemetry.apparent_wind_speed),
-    apparent_wind_direction = COALESCE(excluded.apparent_wind_direction, telemetry.apparent_wind_direction),
-    air_temperature = COALESCE(excluded.air_temperature, telemetry.air_temperature)
-`);
+// Cache the schema so we can whitelist columns + coerce types
+const tableInfo = db.prepare('PRAGMA table_info(data)').all();
+const columnTypeByName = new Map(
+    tableInfo.map(col => [col.name, (col.type || '').toUpperCase()])
+);
 
-function saveData(data) {
-  const {
-    timestamp,
-    latitude = null,
-    longitude = null,
-    depth = null,
-    true_wind_speed = null,
-    true_wind_direction = null,
-    apparent_wind_speed = null,
-    apparent_wind_direction = null,
-    air_temperature = null
-  } = data;
+function coerceToDeclaredType(columnName, value) {
+    if (value === undefined) return undefined; // omit
+    if (value === null) return null; // keep nulls (SQLite will store NULL)
 
-  if (!timestamp) return;
+    const declared = columnTypeByName.get(columnName);
+    if (!declared) return undefined; // unknown column => omit
 
-  insertStmt.run(
-    timestamp,
-    latitude,
-    longitude,
-    depth,
-    true_wind_speed,
-    true_wind_direction,
-    apparent_wind_speed,
-    apparent_wind_direction,
-    air_temperature
-  );
-}
+    if (declared.includes('TEXT')) {
+        return String(value);
+    }
 
-function getData(start, end) {
-  const query = db.prepare('SELECT * FROM telemetry WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC');
-  return query.all(start, end);
+    if (declared.includes('INTEGER')) {
+        const n = typeof value === 'number' ? value : Number(value);
+        if (!Number.isFinite(n)) return undefined; // invalid => omit
+        return Math.trunc(n);
+    }
+
+    if (declared.includes('REAL')) {
+        const n = typeof value === 'number' ? value : Number(value);
+        if (!Number.isFinite(n)) return undefined; // invalid => omit
+        return n;
+    }
+
+    // Fallback: accept as-is for other types you might add later
+    return value;
 }
 
 module.exports = {
-  saveData,
-  getData
+    saveData(data) {
+        // Require PK fields
+        if (!data || data.mmsi == null || data.timestamp == null) {
+            throw new Error('saveData requires mmsi and timestamp');
+        }
+
+        // Whitelist columns + ignore invalid-type values
+        const entries = [];
+        for (const [col, rawVal] of Object.entries(data)) {
+            if (!columnTypeByName.has(col)) continue; // ignore unknown fields
+            const val = coerceToDeclaredType(col, rawVal);
+            if (val === undefined) continue;          // ignore invalid-type (and undefined)
+            entries.push([col, val]);
+        }
+
+        const columns = entries.map(([col]) => col);
+        const values = entries.map(([, val]) => val);
+
+        // If nothing valid beyond PK made it through, we can still insert PK only.
+        // (This keeps the upsert behavior consistent.)
+        const placeholders = columns.map(() => '?').join(',');
+
+        const updates = columns
+            .filter(col => col !== 'mmsi' && col !== 'timestamp')
+            .map(col => `${col}=excluded.${col}`)
+            .join(',');
+
+        const sql = updates.length > 0
+            ? `
+        INSERT INTO data (${columns.join(',')})
+        VALUES (${placeholders})
+        ON CONFLICT(mmsi, timestamp) DO UPDATE SET ${updates}
+      `
+            : `
+        INSERT INTO data (${columns.join(',')})
+        VALUES (${placeholders})
+        ON CONFLICT(mmsi, timestamp) DO NOTHING
+      `;
+
+        db.prepare(sql).run(values);
+    },
+
+    getData(startTime, endTime) {
+        const stmt = db.prepare(
+            'SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC'
+        );
+        return stmt.all(startTime, endTime);
+    }
 };

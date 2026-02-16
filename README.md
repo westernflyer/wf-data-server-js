@@ -69,3 +69,12 @@ Keep-Alive: timeout=5
   {"mmsi":"368323170","timestamp":1771206180000,"awa":261.49,"aws_knots":2.39,"cog_true":217.78,"dew_point_celsius":null,"hdg_true":178.4,"humidity_relative":null,"latitude":36.80578,"longitude":-121.78568833333334,"pressure_millibars":1010,"rate_of_turn":3.38,"rudder_angle":-1.9,"sog_knots":0.02,"temperature_air_celsius":12,"temperature_water_celsius":null,"twd_true":78.99,"tws_knots":1.98,"water_depth_meters":1.64}
 ]    
 ```
+
+
+
+
+# License & Copyright
+
+Copyright (c) 2025-2026 Tom Keffer <tkeffer@gmail.com>
+
+See the file LICENSE for your full rights.

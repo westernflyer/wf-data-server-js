@@ -1,3 +1,23 @@
+# NMEA data logger and server
+
+This server subscribes to NMEA data from an MQTT broker, the writes it to an
+SQLite database. It then exposes a RESTful API to retrieve the data.
+
+## Prerequisites
+
+* Node.js 20.18 or later
+* MQTT broker (e.g. Mosquitto)
+
+## Database schema
+
+Sample entries from the database:
+
+```text
+     mmsi|    timestamp|  awa|aws_knots|cog_true|dew_point_celsius|hdg_true|humidity_relative|latitude | longitude|pressure_millibars|rate_of_turn|rudder_angle|sog_knots|temperature_air_celsius|temperature_water_celsius|twd_true|tws_knots|water_depth_meters
+368323170|1771280880000|133.0|     8.18|   286.6|                 |   177.2|                 |36.805785|-121.78568|            1003.0|        2.48|        -2.0|     0.02|                    8.8|                         |  256.79|     2.68|              1.79
+368323170|1771280940000|113.9|.     5.7|  318.49|                 |   177.2|                 |36.805783|-121.78568|            1003.0|        2.65|        -1.9|     0.04|                    8.8|                         |  289.39|      5.6|              1.84
+...
+```
 
 
 ## API
@@ -90,7 +110,21 @@ Keep-Alive: timeout=5
 ]    
 ```
 
+Malformed query: returns HTTP 400 Bad Request
 
+```shell
+curl -i --silent -X GET 'http://localhost:3001/api/v1/data?limit=2&direction=foo' 
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 54
+ETag: W/"36-PAv/eC4RlyMivMGIlAK3dSDb8Nw"
+Date: Mon, 16 Feb 2026 22:16:11 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"Invalid direction. Use \"asc\" or \"desc\""}
+```
 # License & Copyright
 
 Copyright (c) 2025–2026 Tom Keffer <tkeffer@gmail.com>

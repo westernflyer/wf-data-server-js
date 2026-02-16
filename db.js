@@ -104,8 +104,9 @@ module.exports = {
         db.prepare(sql).run(values);
     },
 
-    getData(startTime, endTime, limit) {
-        let sql = 'SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC';
+    getData(startTime, endTime, limit, direction = 'ASC') {
+        const dir = direction.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+        let sql = `SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ${dir}`;
         const params = [startTime, endTime];
 
         if (limit !== undefined && limit !== null) {

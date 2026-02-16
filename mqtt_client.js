@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025-2026 Tom Keffer <tkeffer@gmail.com>
+ *
+ * See the file LICENSE.txt for your full rights.
+ */
+
 const mqtt = require('mqtt');
 const config = require('./config');
 const db = require('./db');

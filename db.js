@@ -1,7 +1,14 @@
+/*
+ * Copyright (c) 2025-2026 Tom Keffer <tkeffer@gmail.com>
+ *
+ * See the file LICENSE.txt for your full rights.
+ */
+
 const Database = require('better-sqlite3');
 const config = require('./config');
 
-const db = new Database(config.database.path);
+const dbPath = process.env.DB_PATH || config.database.path;
+const db = new Database(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS data (

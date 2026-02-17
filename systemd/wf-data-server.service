@@ -1,0 +1,20 @@
+[Unit]
+Description=NMEA data logger and server
+After=network.target
+
+[Service]
+Type=simple
+User=nmea
+Group=nmea
+WorkingDirectory=/home/nmea/git/wf-data-server-js
+ExecStart=/home/nmea/.nvm/versions/node/v22.22.0/bin/node index.js
+Restart=always
+# Wait 5 seconds before restarting
+RestartSec=5
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=wf-data-server
+
+[Install]
+WantedBy=multi-user.target

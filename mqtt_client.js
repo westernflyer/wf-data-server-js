@@ -8,6 +8,9 @@ const mqtt = require('mqtt');
 const config = require('./config');
 const db = require('./db');
 
+const DEBUG = process.env.DEBUG === '1';
+const debug = (...args) => { if (DEBUG) console.log('[debug]', ...args); };
+
 const client = mqtt.connect(config.mqtt.broker);
 
 // Structure to store accumulated data: { [mmsi]: { [intervalStart]: { data } } }
@@ -21,7 +24,7 @@ client.on('connect', () => {
 function handleMessage(topic, message) {
   const parts = topic.split('/');
   if (parts.length !== 3 || parts[0] !== 'nmea') return;
-  console.log(`Received message on topic ${topic}: ${message}`);
+  debug(`Received message on topic ${topic}: ${message}`);
 
   const mmsi = parts[1];
   // The NMEA sentence type is unused:
@@ -70,11 +73,11 @@ function flush() {
       // If the interval has passed, save it to the DB and remove from memory
       if (parseInt(intervalStart) < currentIntervalStart) {
         try {
-            console.log(`Saving data for ${mmsi} to database`);
-          db.saveData(accumulation[mmsi][intervalStart]);
-          delete accumulation[mmsi][intervalStart];
+            debug(`Saving data for ${mmsi} to database`);
+            db.saveData(accumulation[mmsi][intervalStart]);
+            delete accumulation[mmsi][intervalStart];
         } catch (e) {
-          console.error('Failed to save data to database', e);
+            console.error('Failed to save data to database', e);
         }
       }
     }

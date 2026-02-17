@@ -12,7 +12,8 @@ ExecStart=/home/nmea/.nvm/versions/node/v22.22.0/bin/node index.js
 Restart=always
 # Wait 5 seconds before restarting
 RestartSec=5
-StandardOutput=null
+Environment=DEBUG=1
+StandardOutput=journal
 StandardError=journal+console
 SyslogIdentifier=wf-data-server
 

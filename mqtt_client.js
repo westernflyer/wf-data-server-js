@@ -73,7 +73,9 @@ function flush() {
       // If the interval has passed, save it to the DB and remove from memory
       if (parseInt(intervalStart) < currentIntervalStart) {
         try {
-            debug(`Saving data for ${mmsi} to database`);
+            debug(
+                `Saving data for ${mmsi}, timestamp=${intervalStart} (${new Date(Number(intervalStart)).toISOString()})`
+            );
             db.saveData(accumulation[mmsi][intervalStart]);
             delete accumulation[mmsi][intervalStart];
         } catch (e) {

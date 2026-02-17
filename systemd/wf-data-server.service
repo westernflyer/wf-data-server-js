@@ -1,5 +1,6 @@
 [Unit]
 Description=NMEA data logger and server
+Documentation=https://github.com/westernflyer/wf-data-server-js
 After=network.target
 
 [Service]
@@ -11,8 +12,7 @@ ExecStart=/home/nmea/.nvm/versions/node/v22.22.0/bin/node index.js
 Restart=always
 # Wait 5 seconds before restarting
 RestartSec=5
-# Output to syslog
-StandardOutput=tty
+StandardOutput=null
 StandardError=journal+console
 SyslogIdentifier=wf-data-server
 

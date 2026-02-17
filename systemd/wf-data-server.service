@@ -12,8 +12,8 @@ Restart=always
 # Wait 5 seconds before restarting
 RestartSec=5
 # Output to syslog
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=tty
+StandardError=journal+console
 SyslogIdentifier=wf-data-server
 
 [Install]

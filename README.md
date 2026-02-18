@@ -127,6 +127,9 @@ Keep-Alive: timeout=5
 ```
 # License & Copyright
 
-Copyright (c) 2025–2026 Tom Keffer <tkeffer@gmail.com>
+Copyright (c) 2024-present Tom Keffer <tkeffer@gmail.com>
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
 
 See the file LICENSE for your full rights.

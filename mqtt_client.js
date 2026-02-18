@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2025-2026 Tom Keffer <tkeffer@gmail.com>
+/**
+ * Copyright (c) 2024-present Tom Keffer <tkeffer@gmail.com>
  *
- * See the file LICENSE.txt for your full rights.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 const mqtt = require('mqtt');
@@ -74,7 +75,7 @@ function flush() {
       if (parseInt(intervalStart) < currentIntervalStart) {
         try {
             debug(
-                `Saving data for ${mmsi}, timestamp=${intervalStart} (${new Date(Number(intervalStart)).toISOString()})`
+                `Saving data for MMSI ${mmsi}, timestamp=${intervalStart} (${new Date(Number(intervalStart)).toISOString()})`
             );
             db.saveData(accumulation[mmsi][intervalStart]);
             delete accumulation[mmsi][intervalStart];

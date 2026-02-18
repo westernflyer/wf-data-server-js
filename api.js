@@ -10,7 +10,8 @@ const db = require('./db');
 
 const app = express();
 
-app.get('/api/v1/data', (req, res) => {
+app.get('/api/v1/data/:mmsi', (req, res) => {
+  const { mmsi } = req.params;
   const now = Date.now();
   const defaultStart = now - (60 * 60 * 1000); // 1 hour ago
 
@@ -28,7 +29,7 @@ app.get('/api/v1/data', (req, res) => {
   }
 
   try {
-    const data = db.getData(startTime, endTime, limit, direction);
+    const data = db.getData(mmsi, startTime, endTime, limit, direction);
     res.json(data);
   } catch (e) {
     console.error('Error fetching data from database', e);

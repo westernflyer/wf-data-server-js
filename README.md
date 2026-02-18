@@ -24,13 +24,20 @@ Sample entries from the database:
 
 ### Get records
 
-Return all records within a given time span
+Return all records for a given MMSI within a given time span.
 
 ```
-GET /api/v1/data
+GET /api/v1/data/:mmsi/
 ```
 
-**Parameters**
+**Routing parameters**
+
+| *Name* | *Type* | *Description*                            |
+|:-------|:-------|:-----------------------------------------|
+| `mmsi` | string | Limit the query to this mmsi (required). |
+
+
+**Query parameters**
 
 | *Name*      | *Type*  | *Description*                                                                                                                     |
 |:------------|:--------|:----------------------------------------------------------------------------------------------------------------------------------|
@@ -42,17 +49,18 @@ GET /api/v1/data
 
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 200      | Success               |
-| 400      | Malformed query       |
+| *Status* | *Meaning*          |
+|:---------|:-------------------|
+| 200      | Success            |
+| 400      | Malformed query    |
+| 404      | MMSI not specified |
 
 **Examples**
 
 Ask for the default time span: all records for the last one hour.
 
 ```shell
-$  curl -i --silent -X GET 'http://localhost:3001/api/v1/data'
+$  curl -i --silent -X GET 'http://localhost:3001/api/v1/data/368323170'
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
@@ -75,7 +83,7 @@ Keep-Alive: timeout=5
 Query again but limit the results to 2 records:
 
 ```shell
-curl -i --silent -X GET 'http://localhost:3001/api/v1/data?limit=2'
+curl -i --silent -X GET 'http://localhost:3001/api/v1/data/368323170?limit=2'
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
@@ -94,7 +102,7 @@ Keep-Alive: timeout=5
 This time, return the results in descending order:
 
 ```shell
-curl -i --silent -X GET 'http://localhost:3001/api/v1/data?limit=2&direction=desc'
+curl -i --silent -X GET 'http://localhost:3001/api/v1/data/368323170?limit=2&direction=desc'
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
@@ -113,7 +121,7 @@ Keep-Alive: timeout=5
 Malformed query: returns HTTP 400 Bad Request
 
 ```shell
-curl -i --silent -X GET 'http://localhost:3001/api/v1/data?limit=2&direction=foo' 
+curl -i --silent -X GET 'http://localhost:3001/api/v1/data/368323170?limit=2&direction=foo' 
 HTTP/1.1 400 Bad Request
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8

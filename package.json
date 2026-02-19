@@ -1,6 +1,6 @@
 {
   "name": "wf-data-server-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Store NMEA data from MQTT, then serve it via HTTP.",
   "main": "index.js",
   "scripts": {

@@ -28,7 +28,9 @@ function handleMessage(topic, message) {
   if (parts.length !== 3 || parts[0] !== 'nmea') return;
   debug(`Received message on topic ${topic}: ${message}`);
 
-  const mmsi = parts[1];
+  const mmsi = parseInt(parts[1], 10);
+  if (isNaN(mmsi)) return;
+
   // The NMEA sentence type is unused:
   // const sentenceType = parts[2];
   let data;

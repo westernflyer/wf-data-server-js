@@ -13,7 +13,7 @@ const db = new Database(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS data (
-    mmsi TEXT,
+    mmsi INTEGER,
     timestamp INTEGER,
     awa REAL,
     aws_knots REAL,

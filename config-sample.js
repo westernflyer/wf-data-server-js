@@ -15,9 +15,10 @@ module.exports = {
         "topicPattern": "nmea/+/+"
     },
     "database": {
-        "path": "test_data.db"
+        "path": "/var/tmp/test_data.db"
     },
     "server": {
+        // The port that will be exposed by the server
         "port": 3001
     },
     "accumulation": {

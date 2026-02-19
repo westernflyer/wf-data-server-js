@@ -20,6 +20,7 @@ const accumulation = {};
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
   client.subscribe(config.mqtt.topicPattern);
+  console.log(`Subscribed to topic pattern ${config.mqtt.topicPattern}`);
 });
 
 function handleMessage(topic, message) {

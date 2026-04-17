@@ -25,14 +25,16 @@ client.on('connect', () => {
 
 function handleMessage(topic, message) {
   const parts = topic.split('/');
-  if (parts.length !== 3 || parts[0] !== 'nmea') return;
+  if (parts.length !== 4 || parts[0] !== 'nmea') return;
   debug(`Received message on topic ${topic}: ${message}`);
 
   const mmsi = parseInt(parts[1], 10);
   if (isNaN(mmsi)) return;
 
+  // The channel is not used.
+  // const channel = parts[2];
   // The NMEA sentence type is unused:
-  // const sentenceType = parts[2];
+  // const sentenceType = parts[3]
   let data;
   try {
     data = JSON.parse(message.toString());

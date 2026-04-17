@@ -12,7 +12,7 @@
 module.exports = {
     "mqtt": {
         "broker": "mqtt://localhost",
-        "topicPattern": "nmea/+/+"
+        "topicPattern": "nmea/12345678/+/+"
     },
     "database": {
         "path": "/var/tmp/test_data.db"

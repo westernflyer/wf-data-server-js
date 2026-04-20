@@ -14,6 +14,7 @@ const db = new Database(dbPath);
 db.exec(`
   CREATE TABLE IF NOT EXISTS data (
     mmsi INTEGER,
+    channel TEXT,
     timestamp INTEGER,
     awa REAL,
     aws_knots REAL,
@@ -32,7 +33,7 @@ db.exec(`
     twd_true REAL,
     tws_knots REAL,
     water_depth_meters REAL,
-    PRIMARY KEY (mmsi, timestamp)
+    PRIMARY KEY (mmsi, channel, timestamp)
   )
 `);
 

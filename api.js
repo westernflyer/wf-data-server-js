@@ -12,8 +12,9 @@ const app = express();
 
 app.get('/api/v1/data/:mmsi', (req, res) => {
   const { mmsi } = req.params;
+  const channel = req.query.channel  || 'ch1';
   const now = Date.now();
-  const defaultStart = now - (60 * 60 * 1000); // 1 hour ago
+  const defaultStart = now - (12 * 3600 * 1000); // 12 hours ago
 
   const startTime = req.query.start ? parseInt(req.query.start) : defaultStart;
   const endTime = req.query.end ? parseInt(req.query.end) : now;
@@ -29,7 +30,7 @@ app.get('/api/v1/data/:mmsi', (req, res) => {
   }
 
   try {
-    const data = db.getData(mmsi, startTime, endTime, limit, direction);
+    const data = db.getData(mmsi, channel, startTime, endTime, limit, direction);
     res.json(data);
   } catch (e) {
     console.error('Error fetching data from database', e);

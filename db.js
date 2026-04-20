@@ -100,27 +100,35 @@ module.exports = {
 
         const sql = updates.length > 0
             ? `
-        INSERT INTO data (${columns.join(',')})
-        VALUES (${placeholders})
-        ON CONFLICT(mmsi, timestamp) DO UPDATE SET ${updates}
-      `
+                    INSERT INTO data (${columns.join(',')})
+                    VALUES (${placeholders}) ON CONFLICT(mmsi, channel, timestamp) DO
+                    UPDATE SET ${updates}
+            `
             : `
-        INSERT INTO data (${columns.join(',')})
-        VALUES (${placeholders})
-        ON CONFLICT(mmsi, timestamp) DO NOTHING
-      `;
+                    INSERT INTO data (${columns.join(',')})
+                    VALUES (${placeholders}) ON CONFLICT(mmsi, channel, timestamp) DO NOTHING
+            `;
 
         db.prepare(sql).run(values);
     },
 
-    getData(mmsi, startTime, endTime, limit, direction = 'ASC') {
+    getData(mmsi, channel, startTime, endTime, limit, direction = 'ASC') {
         const dir = direction.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-        let sql = `SELECT * FROM data WHERE timestamp >= ? AND timestamp <= ?`;
+        let sql = `SELECT *
+                   FROM data
+                   WHERE timestamp >= ? AND timestamp <= ?`;
         const params = [startTime, endTime];
 
         if (mmsi !== undefined && mmsi !== null) {
             sql += ' AND mmsi = ?';
             params.push(mmsi);
+        }
+
+        if (channel !== undefined && channel !== null) {
+            if (channel.toUpperCase() !== 'ALL') {
+                sql += ' AND channel = ?';
+                params.push(channel);
+            }
         }
 
         sql += ` ORDER BY timestamp ${dir}`;

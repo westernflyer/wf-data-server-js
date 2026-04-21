@@ -109,10 +109,11 @@ module.exports = {
                     VALUES (${placeholders}) ON CONFLICT(mmsi, channel, timestamp) DO NOTHING
             `;
 
-        db.prepare(sql).run(values);
+        db.prepare(sql).run(...values);
     },
 
-    getData(mmsi, channel, startTime, endTime, limit, direction = 'ASC') {
+    getData(mmsi, channel, startTime, endTime, options = {}) {
+        const { limit, direction = 'ASC' } = options;
         const dir = direction.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
         let sql = `SELECT *
                    FROM data
@@ -138,7 +139,6 @@ module.exports = {
             params.push(limit);
         }
 
-        const stmt = db.prepare(sql);
-        return stmt.all(...params);
+        return db.prepare(sql).all(...params);
     }
 };

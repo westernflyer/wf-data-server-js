@@ -32,7 +32,7 @@ describe('Database Tests', () => {
         };
 
         db.saveData(data);
-        const results = db.getData(test_mmsi, 'ch1', now - 1000, now + 1000, null, 'ASC');
+        const results = db.getData(test_mmsi, 'ch1', now - 1000, now + 1000, { direction: 'ASC' });
         
         assert.strictEqual(results.length, 1);
         assert.strictEqual(results[0].mmsi, 123456789);
@@ -50,7 +50,7 @@ describe('Database Tests', () => {
             });
         }
 
-        const results = db.getData(test_mmsi, 'ch1', now, now + 10, 3);
+        const results = db.getData(test_mmsi, 'ch1', now, now + 10, { limit: 3 });
         assert.strictEqual(results.length, 3);
     });
 
@@ -59,10 +59,10 @@ describe('Database Tests', () => {
         db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now, awa: 1 });
         db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now + 1, awa: 2 });
 
-        const asc = db.getData(test_mmsi, 'ch1', now, now + 1, null, 'asc');
+        const asc = db.getData(test_mmsi, 'ch1', now, now + 1);
         assert.strictEqual(asc[0].timestamp, now);
 
-        const desc = db.getData(test_mmsi, 'ch1', now, now + 1, null, 'desc');
+        const desc = db.getData(test_mmsi, 'ch1', now, now + 1, { direction: 'desc' });
         assert.strictEqual(desc[0].timestamp, now + 1);
     });
 
@@ -71,15 +71,15 @@ describe('Database Tests', () => {
         db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now, temperature_air_celsius: 10 });
         db.saveData({ mmsi: test_mmsi, channel: 'ch2', timestamp: now, temperature_air_celsius: 20 });
 
-        const ch1 = db.getData(test_mmsi, 'ch1', now, now, null, 'asc');
+        const ch1 = db.getData(test_mmsi, 'ch1', now, now);
         assert.strictEqual(ch1.length, 1);
         assert.strictEqual(ch1[0].temperature_air_celsius, 10);
 
-        const ch2 = db.getData(test_mmsi, 'ch2', now, now, null, 'asc');
+        const ch2 = db.getData(test_mmsi, 'ch2', now, now);
         assert.strictEqual(ch2.length, 1);
         assert.strictEqual(ch2[0].temperature_air_celsius, 20);
 
-        const all = db.getData(test_mmsi, 'ALL', now, now, null, 'asc');
+        const all = db.getData(test_mmsi, 'ALL', now, now);
         assert.strictEqual(all.length, 2);
         assert.strictEqual(all.length, 2);
     });

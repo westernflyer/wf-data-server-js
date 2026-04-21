@@ -30,7 +30,7 @@ app.get('/api/v1/data/:mmsi', (req, res) => {
   }
 
   try {
-    const data = db.getData(mmsi, channel, startTime, endTime, limit, direction);
+    const data = db.getData(mmsi, channel, startTime, endTime, { limit, direction });
     res.json(data);
   } catch (e) {
     console.error('Error fetching data from database', e);

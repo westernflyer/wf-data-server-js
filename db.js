@@ -73,8 +73,8 @@ function coerceToDeclaredType(columnName, value) {
 module.exports = {
     saveData(data) {
         // Require primary key fields
-        if (!data || data.mmsi == null || data.timestamp == null) {
-            throw new Error('saveData requires mmsi and timestamp');
+        if (!data || data.mmsi == null || data.timestamp == null || data.channel == null) {
+            throw new Error('saveData requires mmsi, channel, and timestamp');
         }
 
         // Whitelist columns + ignore invalid-type values

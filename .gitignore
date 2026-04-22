@@ -1,6 +1,7 @@
 # Don't commit config file
 config.js
 
+.junie
 google-api-key.js
 
 # Logs

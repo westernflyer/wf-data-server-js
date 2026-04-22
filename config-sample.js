@@ -12,7 +12,7 @@
 module.exports = {
     "mqtt": {
         "broker": "mqtt://localhost",
-        "topicPattern": "nmea/12345678/+/+"
+        "topicPattern": "nmea/12345678/+"
     },
     "database": {
         "path": "/var/tmp/test_data.db"
@@ -21,7 +21,7 @@ module.exports = {
         // The port that will be exposed by the server
         "port": 3001
     },
-    "accumulation": {
+    "last_value": {
         // Time period in milliseconds to accumulate data before writing to the database
         "periodMs": 60000
     }

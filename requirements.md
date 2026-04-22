@@ -5,30 +5,28 @@ RESTful interface to any interested clients.
 There are 10 different kinds of topics published by the broker. Here are examples:
 
 ```
-nmea/368323170/DPT {"depth_below_transducer_meters": 1.81, "transducer_depth_meters": 0.0, "water_depth_meters": 1.81, "sentence_type": "DPT", "timestamp": 1771191273887}
-nmea/368323170/GGA {"timeUTC": "21:34:34", "latitude": 36.80578666666667, "longitude": -121.785685, "fix_quality": "2", "num_satellites": 25, "hdop": 0.5, "altitude_meter": -21.05, "sentence_type": "GGA", "timestamp": 1771191274621}
-nmea/368323170/GLL {"latitude": 36.80578666666667, "longitude": -121.78568666666666, "timeUTC": "21:34:33", "gll_mode": "D", "sentence_type": "GLL", "timestamp": 1771191273235}
-nmea/368323170/HDT {"hdg_true": 179.3, "sentence_type": "HDT", "timestamp": 1771191273901}
-nmea/368323170/MDA {"pressure_inches": 29.9, "pressure_bars": 1.012, "temperature_air_celsius": 13.4, "temperature_water_celsius": null, "humidity_relative": null, "dew_point_celsius": null, "twd_true": 156.3, "twd_magnetic": null, "tws_knots": 8.18, "tws_mps": 4.21, "pressure_millibars": 1012.0, "sentence_type": "MDA", "timestamp": 1771191273932}
-nmea/368323170/MWV {"awa": 328.49, "aws_knots": 9.58, "sentence_type": "MWV", "timestamp": 1771191270777}
-nmea/368323170/ROT {"rate_of_turn": 5.73, "sentence_type": "ROT", "timestamp": 1771191272119}
-nmea/368323170/RSA {"rudder_angle": -2.0, "sentence_type": "RSA", "timestamp": 1771191270153}
-nmea/368323170/VWR {"awa": -23.1, "aws_knots": 9.5, "aws_mps": 4.9, "aws_kph": 17.6, "sentence_type": "VWR", "timestamp": 1771191272354}
-nmea/368323170/VTG {"cog_true": 213.09, "cog_magnetic": null, "sog_knots": 0.02, "sog_kph": 0.04, "sentence_type": "VTG", "timestamp": 1771191270317}
+nmea/368323170/FTMWV {"awa": 56.0, "aws_knots": 5.1, "sentence_type": "MWV", "timestamp": 1776885056777}
+nmea/368323170/GPGLL {"latitude": 36.80578166666667, "longitude": -121.78567833333334, "timeUTC": "19:10:14", "gll_mode": "D", "sentence_type": "GLL", "timestamp": 1776885014842}
+nmea/368323170/GPVTG {"cog_true": 100.08, "cog_magnetic": null, "sog_knots": 0.0, "sog_kph": 0.0, "sentence_type": "VTG", "timestamp": 1776885015433}
+nmea/368323170/HEHDT {"hdg_true": 176.4, "sentence_type": "HDT", "timestamp": 1776885034334}
+nmea/368323170/IIMDA {"pressure_inches": 30.2, "pressure_bars": 1.024, "temperature_air_celsius": 15.1, "temperature_water_celsius": null, "humidity_relative": null, "dew_point_celsius": null, "twd_true": 243.59, "twd_magnetic": null, "tws_knots": 5.0, "tws_mps": 2.57, "pressure_millibars": 1024.0, "sentence_type": "MDA", "timestamp": 1776885025218}
+nmea/368323170/IIRSA {"rudder_angle": -1.8, "sentence_type": "RSA", "timestamp": 1776885015715}
+nmea/368323170/TIROT {"rate_of_turn": 0.04, "sentence_type": "ROT", "timestamp": 1776885035754}
+nmea/368323170/WIMWV {"awa": 61.9, "aws_knots": 5.19, "sentence_type": "MWV", "timestamp": 1776885025549}
 
 ```
 
-Topics are published under the pattern `nmea/'MMSI'/'NMEA'` where 'MMSI' is the
-MMSI number of a boat, and 'NMEA' is the NMEA sentence type from which the data
-is derived. The database schema should include columns for all keys listed
-above, except `sentence_type`. In the case of a key that is included in more
-than one kind of message, the last received value should be used. Note that
-timestamps are in milliseconds of unix epoch time.
+Topics are published under the pattern `nmea/'MMSI'/'address_field'` where
+'MMSI' is the MMSI number of a boat, and `address_field` is the NMEA sentence
+type from which the data is derived. Note that address fields `FTMWV` and
+`WIMWV` have identical data fields, but they should be kept separate.
+
+Timestamps are in milliseconds of unix epoch time.
 
 The application server should subscribe to the MQTT messages, then accumulate
 them for a fixed period of time, typically one minute, then save the accumulated
 data to the SQLite server. This converts the irregularly spaced MQTT packets
-into regularly spaced database records with all columns filled.
+into data with the same timestamp.
 
 The RESTful interface should return data from the database with timestamps
 within an arbitrary time span. The default time span is one hour, ending with
@@ -36,3 +34,6 @@ the present time. The endpoint for the interface should be `/api/v1/data`.
 
 Important configuration information, such as the location of the broker, or the
 path to the database, should be in a separate JavaScript (not JSON) file.
+
+Note that an earlier implementation of this project used a different database
+format. In particular, it recorded `channel`, which is no longer used. 

@@ -12,19 +12,26 @@
 module.exports = {
     "mqtt": {
         "broker": "mqtt://localhost",
-        "topicPattern": "nmea/12345678/+"
+        "topicPattern": "nmea-debug/12345678/+"
     },
     "database": {
-        "path": "/var/tmp/test_data.db"
+        "path": "/var/tmp/test_data.db",
+        "exclude_data_types": new Set([
+            "cog_magnetic",
+            "gll_mode",
+            "pressure_inches",
+            "sog_kph",
+            "timeUTC",
+            "twd_magnetic",
+            "tws_mps",
+        ])
     },
     "server": {
         // The port that will be exposed by the server
         "port": 3001
     },
-    "last_value": {
+    "archive_interval": {
         // Time period in milliseconds to accumulate data before writing to the database
         "periodMs": 60000
     }
 };
-
-

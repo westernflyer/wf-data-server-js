@@ -13,27 +13,28 @@ const db = new Database(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS data (
-    mmsi INTEGER,
-    channel TEXT,
-    timestamp INTEGER,
-    awa REAL,
-    aws_knots REAL,
-    cog_true REAL,
-    dew_point_celsius REAL,
-    hdg_true REAL,
-    humidity_relative REAL,
-    latitude REAL,
-    longitude REAL,
-    pressure_millibars REAL,
-    rate_of_turn REAL,
-    rudder_angle REAL,
-    sog_knots REAL,
-    temperature_air_celsius REAL,
-    temperature_water_celsius REAL,
-    twd_true REAL,
-    tws_knots REAL,
-    water_depth_meters REAL,
-    PRIMARY KEY (mmsi, channel, timestamp)
+    mmsi                            INTEGER NOT NULL,
+    timestamp                       INTEGER NOT NULL,
+    FTMWV_awa                       REAL,
+    FTMWV_aws_knots                 REAL,
+    GPGLL_latitude                  REAL,
+    GPGLL_longitude                 REAL,
+    GPVTG_cog_true                  REAL,
+    GPVTG_sog_knots                 REAL,
+    HEHDT_hdg_true                  REAL,
+    IIMDA_dew_point_celsius         REAL,
+    IIMDA_humidity_relative         REAL,
+    IIMDA_pressure_millibars        REAL,
+    IIMDA_temperature_air_celsius   REAL,
+    IIMDA_temperature_water_celsius REAL,
+    IIMDA_twd_true                  REAL,
+    IIMDA_tws_knots                 REAL,
+    IIMDA_tws_mps                   REAL,
+    IIRSA_rudder_angle              REAL,
+    TIROT_rate_of_turn              REAL,
+    WIMWV_awa                       REAL,
+    WIMWV_aws_knots                 REAL,
+    PRIMARY KEY (mmsi, timestamp)
   )
 `);
 
@@ -73,8 +74,8 @@ function coerceToDeclaredType(columnName, value) {
 module.exports = {
     saveData(data) {
         // Require primary key fields
-        if (!data || data.mmsi == null || data.timestamp == null || data.channel == null) {
-            throw new Error('saveData requires mmsi, channel, and timestamp');
+        if (!data || data.mmsi == null || data.timestamp == null) {
+            throw new Error('saveData requires mmsi and timestamp');
         }
 
         // Whitelist columns + ignore invalid-type values
@@ -101,18 +102,18 @@ module.exports = {
         const sql = updates.length > 0
             ? `
                     INSERT INTO data (${columns.join(',')})
-                    VALUES (${placeholders}) ON CONFLICT(mmsi, channel, timestamp) DO
+                    VALUES (${placeholders}) ON CONFLICT(mmsi, timestamp) DO
                     UPDATE SET ${updates}
             `
             : `
                     INSERT INTO data (${columns.join(',')})
-                    VALUES (${placeholders}) ON CONFLICT(mmsi, channel, timestamp) DO NOTHING
+                    VALUES (${placeholders}) ON CONFLICT(mmsi, timestamp) DO NOTHING
             `;
 
         db.prepare(sql).run(...values);
     },
 
-    getData(mmsi, channel, startTime, endTime, options = {}) {
+    getData(mmsi, startTime, endTime, options = {}) {
         const { limit, direction = 'ASC' } = options;
         const dir = direction.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
         let sql = `SELECT *
@@ -123,13 +124,6 @@ module.exports = {
         if (mmsi !== undefined && mmsi !== null) {
             sql += ' AND mmsi = ?';
             params.push(mmsi);
-        }
-
-        if (channel !== undefined && channel !== null) {
-            if (channel.toUpperCase() !== 'ALL') {
-                sql += ' AND channel = ?';
-                params.push(channel);
-            }
         }
 
         sql += ` ORDER BY timestamp ${dir}`;

@@ -59,7 +59,10 @@ function handleMessage(topic, message) {
     // Note the most recent data, excluding sentence_type and timestamp
     for (const key in data) {
         if (key !== 'sentence_type' && key !== 'timestamp') {
-            last_value[mmsi][intervalStart][key] = data[key];
+            if (!config.database.exclude_data_types.has(key)) {
+                const fullKey = `${address_field}_${key}`;
+                last_value[mmsi][intervalStart][fullKey] = data[key];
+            }
         }
     }
 }
@@ -72,7 +75,7 @@ function flush() {
     const currentIntervalStart = Math.floor(now / config.archive_interval.periodMs) * config.archive_interval.periodMs;
 
     for (const mmsi in last_value) {
-        for (const intervalStart in last_value[mmsi][channel]) {
+        for (const intervalStart in last_value[mmsi]) {
             // If the interval has passed, save it to the DB and remove from memory
             if (parseInt(intervalStart) < currentIntervalStart) {
                 try {

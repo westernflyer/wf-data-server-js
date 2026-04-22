@@ -26,17 +26,16 @@ describe('Database Tests', () => {
         const now = Date.now();
         const data = {
             mmsi: test_mmsi,
-            channel: 'ch1',
             timestamp: now,
-            temperature_air_celsius: 15.5
+            IIMDA_temperature_air_celsius: 15.5
         };
 
         db.saveData(data);
-        const results = db.getData(test_mmsi, 'ch1', now - 1000, now + 1000, { direction: 'ASC' });
+        const results = db.getData(test_mmsi, now - 1000, now + 1000, { direction: 'ASC' });
         
         assert.strictEqual(results.length, 1);
         assert.strictEqual(results[0].mmsi, 123456789);
-        assert.strictEqual(results[0].temperature_air_celsius, 15.5);
+        assert.strictEqual(results[0].IIMDA_temperature_air_celsius, 15.5);
     });
 
     it('should respect limit parameter', () => {
@@ -44,43 +43,39 @@ describe('Database Tests', () => {
         for (let i = 0; i < 5; i++) {
             db.saveData({
                 mmsi: test_mmsi,
-                channel: 'ch1',
                 timestamp: now + i,
-                awa: i
+                FTMWV_awa: i
             });
         }
 
-        const results = db.getData(test_mmsi, 'ch1', now, now + 10, { limit: 3 });
+        const results = db.getData(test_mmsi, now, now + 10, { limit: 3 });
         assert.strictEqual(results.length, 3);
     });
 
     it('should respect direction parameter', () => {
         const now = Date.now();
-        db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now, awa: 1 });
-        db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now + 1, awa: 2 });
+        db.saveData({ mmsi: test_mmsi, timestamp: now, FTMWV_awa: 1 });
+        db.saveData({ mmsi: test_mmsi, timestamp: now + 1, FTMWV_awa: 2 });
 
-        const asc = db.getData(test_mmsi, 'ch1', now, now + 1);
+        const asc = db.getData(test_mmsi, now, now + 1);
         assert.strictEqual(asc[0].timestamp, now);
 
-        const desc = db.getData(test_mmsi, 'ch1', now, now + 1, { direction: 'desc' });
+        const desc = db.getData(test_mmsi, now, now + 1, { direction: 'desc' });
         assert.strictEqual(desc[0].timestamp, now + 1);
     });
 
-    it('should handle different channels', () => {
+    it('should handle different MMSIs', () => {
         const now = Date.now();
-        db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now, temperature_air_celsius: 10 });
-        db.saveData({ mmsi: test_mmsi, channel: 'ch2', timestamp: now, temperature_air_celsius: 20 });
+        const other_mmsi = 987654321;
+        db.saveData({ mmsi: test_mmsi, timestamp: now, IIMDA_temperature_air_celsius: 10 });
+        db.saveData({ mmsi: other_mmsi, timestamp: now, IIMDA_temperature_air_celsius: 20 });
 
-        const ch1 = db.getData(test_mmsi, 'ch1', now, now);
-        assert.strictEqual(ch1.length, 1);
-        assert.strictEqual(ch1[0].temperature_air_celsius, 10);
+        const mmsi1 = db.getData(test_mmsi, now, now);
+        assert.strictEqual(mmsi1.length, 1);
+        assert.strictEqual(mmsi1[0].IIMDA_temperature_air_celsius, 10);
 
-        const ch2 = db.getData(test_mmsi, 'ch2', now, now);
-        assert.strictEqual(ch2.length, 1);
-        assert.strictEqual(ch2[0].temperature_air_celsius, 20);
-
-        const all = db.getData(test_mmsi, 'ALL', now, now);
-        assert.strictEqual(all.length, 2);
-        assert.strictEqual(all.length, 2);
+        const mmsi2 = db.getData(other_mmsi, now, now);
+        assert.strictEqual(mmsi2.length, 1);
+        assert.strictEqual(mmsi2[0].IIMDA_temperature_air_celsius, 20);
     });
 });

@@ -21,8 +21,8 @@ describe('API Tests', () => {
     before(() => {
         // Populate with some data
         const now = Date.now();
-        db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now - 10000, awa: 10 });
-        db.saveData({ mmsi: test_mmsi, channel: 'ch1', timestamp: now - 5000, awa: 20 });
+        db.saveData({ mmsi: test_mmsi, timestamp: now - 10000, FTMWV_awa: 10 });
+        db.saveData({ mmsi: test_mmsi, timestamp: now - 5000, FTMWV_awa: 20 });
     });
 
     after(() => {
@@ -32,22 +32,23 @@ describe('API Tests', () => {
     });
 
     it('GET /api/v1/data should return records', async () => {
-        const res = await request(app).get(`/api/v1/data/${test_mmsi}?channel=ch1`);
+        const res = await request(app).get(`/api/v1/data/${test_mmsi}`);
         assert.strictEqual(res.status, 200);
         assert(Array.isArray(res.body));
         assert.strictEqual(res.body.length, 2);
     });
 
-    it('GET /api/v1/data should filter by channel', async () => {
+    it('GET /api/v1/data should filter by mmsi', async () => {
         const now = Date.now();
-        db.saveData({ mmsi: test_mmsi, channel: 'ch2', timestamp: now, awa: 30 });
+        const other_mmsi = 987654321;
+        db.saveData({ mmsi: other_mmsi, timestamp: now, FTMWV_awa: 30 });
         
-        const res1 = await request(app).get(`/api/v1/data/${test_mmsi}?channel=ch1`);
+        const res1 = await request(app).get(`/api/v1/data/${test_mmsi}`);
         assert.strictEqual(res1.body.length, 2);
         
-        const res2 = await request(app).get(`/api/v1/data/${test_mmsi}?channel=ch2`);
+        const res2 = await request(app).get(`/api/v1/data/${other_mmsi}`);
         assert.strictEqual(res2.body.length, 1);
-        assert.strictEqual(res2.body[0].awa, 30);
+        assert.strictEqual(res2.body[0].FTMWV_awa, 30);
     });
 
     it('GET /api/v1/data should respect limit', async () => {

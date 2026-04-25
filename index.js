@@ -5,7 +5,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-const config = require('./config');
+const config = require('./config-loader');
 require('./mqtt_client');
 const app = require('./api');
 

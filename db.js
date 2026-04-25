@@ -6,7 +6,7 @@
  */
 
 const Database = require('better-sqlite3');
-const config = require('./config');
+const config = require('./config-loader');
 
 const dbPath = process.env.DB_PATH || config.database.path;
 const db = new Database(dbPath);

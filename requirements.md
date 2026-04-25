@@ -64,7 +64,7 @@ within an arbitrary time span. The default time span is 12 hours, ending with
 the present time. The endpoint for the interface should be `/api/v1/data/:mmsi`.
 
 Important configuration information, such as the location of the broker, or the
-path to the database, should be in a separate JavaScript (not JSON) file.
+path to the database, should be in a TOML file (`config.toml`).
 
 Note that an earlier implementation of this project used a different database
 format. In particular, it recorded `channel`, which is no longer used. 

@@ -9,7 +9,13 @@ const fs = require('fs');
 const path = require('path');
 const toml = require('smol-toml');
 
-const configPath = path.join(__dirname, 'config.toml');
+// Check for a config path in the command line arguments
+let configPath = path.join(__dirname, 'config.toml');
+const configIndex = process.argv.indexOf('--config');
+if (configIndex !== -1 && process.argv[configIndex + 1]) {
+    configPath = process.argv[configIndex + 1];
+}
+
 const configContent = fs.readFileSync(configPath, 'utf8');
 const config = toml.parse(configContent);
 

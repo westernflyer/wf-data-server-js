@@ -12,30 +12,31 @@ const dbPath = process.env.DB_PATH || config.database.path;
 const db = new Database(dbPath);
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS data (
-    mmsi                            INTEGER NOT NULL,
-    timestamp                       INTEGER NOT NULL,
-    FTMWV_awa                       REAL,
-    FTMWV_aws_knots                 REAL,
-    GPGLL_latitude                  REAL,
-    GPGLL_longitude                 REAL,
-    GPVTG_cog_true                  REAL,
-    GPVTG_sog_knots                 REAL,
-    HEHDT_hdg_true                  REAL,
-    IIMDA_dew_point_celsius         REAL,
-    IIMDA_humidity_relative         REAL,
-    IIMDA_pressure_millibars        REAL,
-    IIMDA_temperature_air_celsius   REAL,
-    IIMDA_temperature_water_celsius REAL,
-    IIMDA_twd_true                  REAL,
-    IIMDA_tws_knots                 REAL,
-    IIMDA_tws_mps                   REAL,
-    IIRSA_rudder_angle              REAL,
-    TIROT_rate_of_turn              REAL,
-    WIMWV_awa                       REAL,
-    WIMWV_aws_knots                 REAL,
-    PRIMARY KEY (mmsi, timestamp)
-  )
+    CREATE TABLE IF NOT EXISTS data
+    (
+        mmsi                                INTEGER NOT NULL,
+        timestamp                           INTEGER NOT NULL,
+        FTMWV_awa                           REAL,
+        FTMWV_aws_knots                     REAL,
+        GPGLL_latitude                      REAL,
+        GPGLL_longitude                     REAL,
+        GPVTG_cog_true                      REAL,
+        GPVTG_sog_knots                     REAL,
+        HEHDT_hdg_true                      REAL,
+        IIMDA_dew_point_celsius             REAL,
+        IIMDA_humidity_relative             REAL,
+        IIMDA_pressure_millibars            REAL,
+        IIMDA_temperature_air_celsius       REAL,
+        IIMDA_temperature_water_celsius     REAL,
+        IIMDA_twd_true                      REAL,
+        IIMDA_tws_knots                     REAL,
+        IIRSA_rudder_angle                  REAL,
+        SDDPT_depth_below_transducer_meters REAL,
+        TIROT_rate_of_turn                  REAL,
+        WIMWV_awa                           REAL,
+        WIMWV_aws_knots                     REAL,
+        PRIMARY KEY (mmsi, timestamp)
+    )
 `);
 
 // Cache the schema so we can whitelist columns + coerce types

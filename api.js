@@ -7,13 +7,16 @@
 
 const express = require('express');
 const db = require('./db');
+const config = require('./config-loader');
+
 
 const app = express();
 
 app.get('/api/v1/data/:mmsi', (req, res) => {
   const { mmsi } = req.params;
   const now = Date.now();
-  const defaultStart = now - (12 * 3600 * 1000); // 12 hours ago
+  // The default start in milliseconds
+  const defaultStart = now - config.server.defaultHistoryHours * 3600.0 * 1000.0;
 
   const startTime = req.query.start ? parseInt(req.query.start) : defaultStart;
   const endTime = req.query.end ? parseInt(req.query.end) : now;

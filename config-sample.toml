@@ -27,6 +27,8 @@ exclude_data_types = [
 [server]
 # The port that will be exposed by the server
 port = 3001
+# How many hours of history will be returned by default:
+defaultHistoryHours = 12
 
 [archive_interval]
 # Time period in milliseconds to accumulate data before writing to the database

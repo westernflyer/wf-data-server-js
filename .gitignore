@@ -1,5 +1,5 @@
 # Don't commit config file
-config.js
+config.toml
 
 .junie
 google-api-key.js

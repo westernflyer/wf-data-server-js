@@ -11,6 +11,7 @@ nmea/368323170/GPVTG {"cog_true": 100.08, "cog_magnetic": null, "sog_knots": 0.0
 nmea/368323170/HEHDT {"hdg_true": 176.4, "sentence_type": "HDT", "timestamp": 1776885034334}
 nmea/368323170/IIMDA {"pressure_inches": 30.2, "pressure_bars": 1.024, "temperature_air_celsius": 15.1, "temperature_water_celsius": null, "humidity_relative": null, "dew_point_celsius": null, "twd_true": 243.59, "twd_magnetic": null, "tws_knots": 5.0, "tws_mps": 2.57, "pressure_millibars": 1024.0, "sentence_type": "MDA", "timestamp": 1776885025218}
 nmea/368323170/IIRSA {"rudder_angle": -1.8, "sentence_type": "RSA", "timestamp": 1776885015715}
+nmea/368323170/SDDPT {"depth_below_transducer_meters": 1.39, "transducer_depth_meters": 0.0, "water_depth_meters": 1.39, "sentence_type": "DPT", "timestamp": 1778753479331}
 nmea/368323170/TIROT {"rate_of_turn": 0.04, "sentence_type": "ROT", "timestamp": 1776885035754}
 nmea/368323170/WIMWV {"awa": 61.9, "aws_knots": 5.19, "sentence_type": "MWV", "timestamp": 1776885025549}
 
@@ -27,28 +28,30 @@ requires a database schema that looks like this:
 ```SQL
 CREATE TABLE IF NOT EXISTS data
 (
-    mmsi                            INTEGER NOT NULL,
-    timestamp                       INTEGER NOT NULL,
-    FTMWV_awa                       REAL,
-    FTMWV_aws_knots                 REAL,
-    GPGLL_latitude                  REAL,
-    GPGLL_longitude                 REAL,
-    GPVTG_cog_true                  REAL,
-    GPVTG_sog_knots                 REAL,
-    HEHDT_hdg_true                  REAL,
-    IIMDA_dew_point_celsius         REAL,
-    IIMDA_humidity_relative         REAL,
-    IIMDA_pressure_millibars        REAL,
-    IIMDA_temperature_air_celsius   REAL,
-    IIMDA_temperature_water_celsius REAL,
-    IIMDA_twd_true                  REAL,
-    IIMDA_tws_knots                 REAL,
-    IIMDA_tws_mps                   REAL,
-    IIRSA_rudder_angle              REAL,
-    TIROT_rate_of_turn              REAL,
-    WIMWV_awa                       REAL,
-    WIMWV_aws_knots                 REAL
-)
+    mmsi                                INTEGER NOT NULL,
+    timestamp                           INTEGER NOT NULL,
+    FTMWV_awa                           REAL,
+    FTMWV_aws_knots                     REAL,
+    GPGLL_latitude                      REAL,
+    GPGLL_longitude                     REAL,
+    GPVTG_cog_true                      REAL,
+    GPVTG_sog_knots                     REAL,
+    HEHDT_hdg_true                      REAL,
+    IIMDA_dew_point_celsius             REAL,
+    IIMDA_humidity_relative             REAL,
+    IIMDA_pressure_millibars            REAL,
+    IIMDA_temperature_air_celsius       REAL,
+    IIMDA_temperature_water_celsius     REAL,
+    IIMDA_twd_true                      REAL,
+    IIMDA_tws_knots                     REAL,
+    IIRSA_rudder_angle                  REAL,
+    SDDPT_depth_below_transducer_meters REAL,
+    SDDPT_water_depth_meters            REAL,
+    TIROT_rate_of_turn                  REAL,
+    WIMWV_awa                           REAL,
+    WIMWV_aws_knots                     REAL,
+    PRIMARY KEY (mmsi, timestamp)
+);
 ```
 
 Note that the column names are a concatenation of the source address field and

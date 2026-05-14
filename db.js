@@ -32,6 +32,7 @@ db.exec(`
         IIMDA_tws_knots                     REAL,
         IIRSA_rudder_angle                  REAL,
         SDDPT_depth_below_transducer_meters REAL,
+        SDDPT_water_depth_meters            REAL,
         TIROT_rate_of_turn                  REAL,
         WIMWV_awa                           REAL,
         WIMWV_aws_knots                     REAL,

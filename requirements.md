@@ -2,7 +2,7 @@ Summary: this project is an application server that subscribes to messages from
 an MQTT broker, writes them to a database, then offers them back up through a
 RESTful interface to any interested clients.
 
-There are 8 different kinds of topics published by the broker. Here are examples:
+There are 9 different kinds of topics published by the broker. Here are examples:
 
 ```
 nmea/368323170/FTMWV {"awa": 56.0, "aws_knots": 5.1, "sentence_type": "MWV", "timestamp": 1776885056777}

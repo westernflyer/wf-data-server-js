@@ -43,16 +43,16 @@ function handleMessage(topic, message) {
     const timestamp = data.timestamp;
     if (!timestamp) return;
 
-    const intervalStart = Math.floor(timestamp / config.archive_interval.periodMs) * config.archive_interval.periodMs;
+    const intervalEnd = (Math.floor(timestamp / config.archive_interval.periodMs) + 1) * config.archive_interval.periodMs;
 
     if (!last_value[mmsi]) {
         last_value[mmsi] = {};
     }
 
-    if (!last_value[mmsi][intervalStart]) {
-        last_value[mmsi][intervalStart] = {
+    if (!last_value[mmsi][intervalEnd]) {
+        last_value[mmsi][intervalEnd] = {
             mmsi: mmsi,
-            timestamp: intervalStart
+            timestamp: intervalEnd
         };
     }
 
@@ -61,7 +61,7 @@ function handleMessage(topic, message) {
         if (key !== 'sentence_type' && key !== 'timestamp') {
             if (!config.database.exclude_data_types.has(key)) {
                 const fullKey = `${address_field}_${key}`;
-                last_value[mmsi][intervalStart][fullKey] = data[key];
+                last_value[mmsi][intervalEnd][fullKey] = data[key];
             }
         }
     }
@@ -72,18 +72,18 @@ client.on('message', handleMessage);
 // Periodically flush data to database
 function flush() {
     const now = Date.now();
-    const currentIntervalStart = Math.floor(now / config.archive_interval.periodMs) * config.archive_interval.periodMs;
+    const currentIntervalEnd = Math.floor(now / config.archive_interval.periodMs) * config.archive_interval.periodMs;
 
     for (const mmsi in last_value) {
-        for (const intervalStart in last_value[mmsi]) {
+        for (const intervalEnd in last_value[mmsi]) {
             // If the interval has passed, save it to the DB and remove from memory
-            if (parseInt(intervalStart) < currentIntervalStart) {
+            if (parseInt(intervalEnd) <= currentIntervalEnd) {
                 try {
                     debug(
-                        `Saving data for MMSI ${mmsi}, timestamp=${intervalStart} (${new Date(Number(intervalStart)).toISOString()})`
+                        `Saving data for MMSI ${mmsi}, timestamp=${intervalEnd} (${new Date(Number(intervalEnd)).toISOString()})`
                     );
-                    db.saveData(last_value[mmsi][intervalStart]);
-                    delete last_value[mmsi][intervalStart];
+                    db.saveData(last_value[mmsi][intervalEnd]);
+                    delete last_value[mmsi][intervalEnd];
                 } catch (e) {
                     console.error('Failed to save data to database', e);
                 }

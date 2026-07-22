@@ -43,6 +43,12 @@ function handleMessage(topic, message) {
     const timestamp = data.timestamp;
     if (!timestamp) return;
 
+    debug(
+        `Message timing: address=${address_field}, payload=${new Date(timestamp).toISOString()}, ` +
+        `received=${new Date().toISOString()}, ageMs=${Date.now() - timestamp}`
+    );
+
+
     const intervalStart = Math.floor(timestamp / config.archive_interval.periodMs) * config.archive_interval.periodMs;
 
     if (!last_value[mmsi]) {

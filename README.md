@@ -6,7 +6,8 @@ SQLite database. It then exposes a RESTful API to retrieve the data.
 ## Prerequisites
 
 * Node.js 20.18 or later
-* MQTT broker (e.g. Mosquitto)
+* MQTT broker (e.g., Mosquitto)
+* Some sort of time service (such as `systemd-timesyncd` or `chrony` or `ntp`)
 
 ## Database schema
 
